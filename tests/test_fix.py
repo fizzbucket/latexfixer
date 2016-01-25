@@ -18,7 +18,13 @@ class Test_LatexTest(unittest.TestCase):
         self.assertNotIsInstance(string, self.lf)
         
     def test__sentence_to_interstitial_spacing(self):
-        pass
+        test_strings = [('Hello world.', 'Hello world.'),
+                        ('A greeting, e.g. to a friend.',
+                            'A greeting, e.g.\ to a friend.'),
+                        ('Hello, Prof. World', 'Hello, Prof.~World')]
+        for phrase, processed_phrase in test_strings:
+            self.init(phrase)
+            self.assertEqual(self.tm, processed_phrase)
 
     def test__interstitial_to_sentence_spacing(self):
         pass

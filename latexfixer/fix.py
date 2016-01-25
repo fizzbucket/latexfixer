@@ -1,10 +1,16 @@
 import collections
 import re
 
-class LatexText(collections.UserString):
+class LatexText(str):
 
     """Transform a unicode string into another more compatible with latex,
     fixing some common typographical errors"""
+
+    def __new__(self, *args, **kwargs):
+        text = LatexFixer(*args, **kwargs).tostring()
+        return str(text)
+
+class LatexFixer(collections.UserString):
 
     def __init__(self, text, frenchspacing=False):
       super().__init__(text)
@@ -20,46 +26,26 @@ class LatexText(collections.UserString):
       return self.data
 
     def _sentence_to_interstitial_spacing(self):
-      """Fix common spacing errors caused by LaTeX's habit
-      of using an inter-sentence space after any full stop."""
-      
-      not_sentence_end_chars = [' ']
+        """Fix common spacing errors caused by LaTeX's habit
+        of using an inter-sentence space after any full stop."""
 
-      abbreviations = ['i.e.',
-                'e.g.',
-                ' v.',
-                ' w.',
-                ' wh.',
-                ]
-      
-      for abbrev in abbreviations:
-          for x in not_sentence_end_chars:
-              self._str_replacement(abbrev + x, abbrev + '\ ')
+        not_sentence_end_chars = [' ']
+        abbreviations = ['i.e.', 'e.g.', ' v.',
+            ' w.', ' wh.']
+        titles = ['Prof.', 'Mr.', 'Mrs.', 'Messrs.',
+            'Mmes.', 'Msgr.', 'Ms.', 'Fr.', 'Rev.',
+            'St.', 'Dr.', 'Lieut.', 'Lt.', 'Capt.',
+            'Cptn.', 'Sgt.', 'Sjt.', 'Gen.', 'Hon.',
+            'Cpl.', 'L-Cpl.', 'Pvt.', 'Dvr.', 'Gnr.',
+            'Spr.', 'Col.', 'Lt-Col', 'Lt-Gen.', 'Mx.']
 
-      titles = ['Prof.',
-                'Mr.',
-                'Mrs.',
-                'Messrs.',
-                'Mmes.',
-                'Msgr.',
-                'Ms.',
-                'Fr.',
-                'Rev.',
-                'St.',
-                'Dr.',
-                'Lieut.',
-                'Lt.',
-                'Capt.',
-                'Cptn.',
-                'Sgt.',
-                'Sjt.',
-                'Gen.',
-                'Hon.',
-                'Col.',
-               ]
-      for title in titles:
-          for x in not_sentence_end_chars:
-              self._str_replacement(title + x, title + '~')
+        for abbrev in abbreviations:
+            for x in not_sentence_end_chars:
+                self._str_replacement(abbrev + x, abbrev + '\ ')
+
+        for title in titles:
+            for x in not_sentence_end_chars:
+                self._str_replacement(title + x, title + '~')
 
     def _interstitial_to_sentence_spacing(self):
       """Fix errors where inter-sentence spacing
