@@ -2,7 +2,7 @@ import collections
 import re
 import ftfy
 
-def LatexText():
+def LatexText(*args, **kwargs):
     """Transform a unicode string into another more compatible with latex,
     fixing some common typographical errors"""
     text = LatexFixer(*args, **kwargs).tostring()
