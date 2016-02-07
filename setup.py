@@ -5,7 +5,7 @@ setup(
     name="latexfixer",
 
     # Version number (initial):
-    version="0.1.2",
+    version="0.1.6",
 
     # Application author details:
     author="Tom McLean",
@@ -47,5 +47,5 @@ setup(
 
     # long_description=open("README.txt").read(),
     # Dependent packages (distributions)
-    install_requires=[],
+    install_requires=['ftfy'],
 )

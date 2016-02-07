@@ -1,24 +1,22 @@
 import collections
 import re
+import ftfy
 
-class LatexText(str):
-
+def LatexText():
     """Transform a unicode string into another more compatible with latex,
     fixing some common typographical errors"""
-
-    def __new__(self, *args, **kwargs):
-        text = LatexFixer(*args, **kwargs).tostring()
-        return str(text)
+    text = LatexFixer(*args, **kwargs).tostring()
+    return str(text)
 
 class LatexFixer(collections.UserString):
 
     def __init__(self, text, frenchspacing=False):
+      text = ftfy.fix_text(text)
       super().__init__(text)
       if not frenchspacing:
           self._sentence_to_interstitial_spacing()
           self._interstitial_to_sentence_spacing()
       self._latex_symbols()
-      self._whitespace_substitution()
       self._hyphens_to_dashes()
 
     def tostring(self):
@@ -57,20 +55,11 @@ class LatexFixer(collections.UserString):
       """Replace unicode symbols with latex commands
       where those symbols cannot be represented in utf mode."""
 
-      substs = [('∴', '\\thinspace$\\therefore$\\thinspace{}')]
+      substs = [('∴', '\\thinspace$\\therefore$\\thinspace{}'), # requires \amssymb
+                ('...', '\dots{}'),
+                ('÷', '$\div%')]
       for sub in substs:
           self._str_replacement(*sub)
-
-
-    def _whitespace_substitution(self):
-      """Normalise whitespace"""
-      wspaces = [(r'\ +', ' '), # Be a tidy kiwi.
-                (r'\n\ +', '\n'),
-                (r'\n\n+', '\n\n'),
-               ]
-      for match in wspaces:
-          self._regex_replacement(*match)
-
 
     def _hyphens_to_dashes(self):
       """Transform hyphens to various kinds of dashes"""
