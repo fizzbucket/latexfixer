@@ -57,7 +57,7 @@ class LatexFixer(collections.UserString):
 
       substs = [('∴', '\\thinspace$\\therefore$\\thinspace{}'), # requires \amssymb
                 ('...', '\dots{}'),
-                ('÷', '$\div%')]
+                ('÷', '$\div$')]
       for sub in substs:
           self._str_replacement(*sub)
 
