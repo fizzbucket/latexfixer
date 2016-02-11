@@ -5,14 +5,14 @@ import ftfy
 def LatexText(*args, **kwargs):
     """Transform a unicode string into another more compatible with latex,
     fixing some common typographical errors"""
-    text = LatexFixer(*args, **kwargs).tostring()
-    return str(text)
+    return LatexFixer(*args, **kwargs).tostring()
 
 class LatexFixer(collections.UserString):
 
-    def __init__(self, text, frenchspacing=False):
-      text = ftfy.fix_text(text)
-      super().__init__(text)
+    def __init__(self, text, frenchspacing=False, normalise=False):
+      self.data = text
+      if normalise:
+        self.data = ftfy.fix_text(self.data)
       if not frenchspacing:
           self._sentence_to_interstitial_spacing()
           self._interstitial_to_sentence_spacing()
